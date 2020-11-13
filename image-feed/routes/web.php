@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,10 +14,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
+Route::get('/', 'PostsController@index')->name('index');
 Auth::routes();
-
 Route::get('/home', 'HomeController@index')->name('home');
+Route::middleware(['auth'])->group(function () {
+  Route::view('post/create', 'posts.create')->name('create_post');
+  Route::post('posts/store', 'PostsController@store')->name('store_post');
+
+  Route::get('user/profile', function () {
+    // Uses first & second middleware...
+  });
+});

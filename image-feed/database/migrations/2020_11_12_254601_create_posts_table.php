@@ -17,9 +17,9 @@ class CreatePostsTable extends Migration
             $table->id();
             $table->timestamps();
             $table->string('title');
-            $table->foreignId('image_id')->constrained();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('state_id')->constrained();
+            $table->enum('status', ['approved', 'pending'])->default('pending');
+            $table->foreignId('image_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
         });
     }
 
