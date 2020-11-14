@@ -38,10 +38,10 @@ class User extends Authenticatable
     ];
     public function posts()
     {
-        $this->hasMany('App\Models\Post');
+        return $this->hasMany('App\Models\Post');
     }
     public function role()
     {
-        $this->belongsTo('App\Models\Role');
+        return $this->belongsTo('App\Models\Role');
     }
 }

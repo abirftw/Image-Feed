@@ -20,6 +20,8 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
+@include('common.errors')
+@include('common.success')
 
 <body>
     <div id="app">
@@ -57,12 +59,18 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('create_post') }}">{{ __('Add Post') }}</a>
                         </li>
+                        @can('approve-post')
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('approve_post') }}">{{ __('Approve Post') }}</a>
+                        </li>
+                        @endcan
                         <li class="nav-item dropdown">
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                 {{ Auth::user()->name }}
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                <a href="{{route('user_posts')}}" class="dropdown-item">{{ __('My Posts')  }}</a>
                                 <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                     {{ __('Logout') }}
