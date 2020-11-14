@@ -11,12 +11,12 @@ class Post extends Model
         'title', 'image_id', 'user_id', 'state_id'
     ];
 
-    public function image()
-    {
-        return $this->hasOne('App\Models\Image');
-    }
     public function user()
     {
         return $this->belongsTo('App\User');
+    }
+    public function image()
+    {
+        return $this->belongsTo('App\Models\Image');
     }
 }

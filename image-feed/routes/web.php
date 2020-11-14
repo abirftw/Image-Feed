@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,8 +23,10 @@ Route::middleware(['auth'])->group(function () {
   Route::view('post/create', 'posts.create')->name('create_post');
   Route::post('posts/store', 'PostsController@store')->name('store_post');
   Route::get('posts/myposts', 'PostsController@show')->name('user_posts');
-  Route::get('posts/approve', 'PostsController@approve')->name('approve_post');
-  Route::get('user/profile', function () {
-    // Uses first & second middleware...
-  });
+  Route::get('posts/pending', 'PostsController@approveIndex')->name('approve_post_list');
+  Route::post('posts/approve/{post}', 'PostsController@approve')->name('approve_post');
+  Route::get('get/images/{name}', function ($name) {
+    Gate::authorize('approve-post');
+    return response()->download(Storage::path("private\\$name"), null, [], null);
+  })->name('get_image');
 });
