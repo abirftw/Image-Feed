@@ -7,6 +7,7 @@ use App\Models\Post;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 abstract class states
 {
@@ -108,10 +109,25 @@ class PostsController extends Controller
     {
         //
     }
-    public function approve()
+    public function approveIndex()
     {
         Gate::authorize('approve-post');
         $posts = Post::where('status', 'pending')->paginate(5);
         return view('posts.approve', ['posts' => $posts]);
+    }
+    public function approve(Request $request, Post $post)
+    {
+        if ($request->input('decision') == 'approve') {
+            Post::where('id', $post->id)->update(
+                [
+                    'status' => 'approved'
+                ]
+            );
+            $fileName = $post->image->name;
+            Storage::move("private/$fileName", "/public/images/$fileName");
+            return redirect(route('approve_post_list'))->with('success', 'Success');
+        } else if ($request->input('decision') == 'reject') {
+            return redirect(route('approve_post_list'))->with('success', 'Success');
+        }
     }
 }

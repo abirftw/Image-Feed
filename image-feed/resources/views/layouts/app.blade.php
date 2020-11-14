@@ -61,7 +61,7 @@
                         </li>
                         @can('approve-post')
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('approve_post') }}">{{ __('Approve Post') }}</a>
+                            <a class="nav-link" href="{{ route('approve_post_list') }}">{{ __('Approve Post') }}</a>
                         </li>
                         @endcan
                         <li class="nav-item dropdown">
