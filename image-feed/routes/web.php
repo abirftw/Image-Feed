@@ -20,7 +20,8 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::middleware(['auth'])->group(function () {
   Route::view('post/create', 'posts.create')->name('create_post');
   Route::post('posts/store', 'PostsController@store')->name('store_post');
-
+  Route::get('posts/myposts', 'PostsController@show')->name('user_posts');
+  Route::get('posts/approve', 'PostsController@approve')->name('approve_post');
   Route::get('user/profile', function () {
     // Uses first & second middleware...
   });
