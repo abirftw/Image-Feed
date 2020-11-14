@@ -236,6 +236,6 @@ return [
         'post_reject' => 'Post rejected successfully',
         'post_submit' => 'Post submitted for moderation successfully'
     ],
-    'pending_images' => 'private',
+    'pending_images_dir' => 'private',
 
 ];

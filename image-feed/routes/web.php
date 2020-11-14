@@ -26,7 +26,6 @@ Route::middleware(['auth'])->group(function () {
   Route::get('posts/pending', 'PostsController@approveIndex')->name('approve_post_list');
   Route::post('posts/approve/{post}', 'PostsController@approve')->name('approve_post');
   Route::get('get/images/{name}', function ($name) {
-    Gate::authorize('approve-post');
     return response()->download(Storage::path("private\\$name"), null, [], null);
   })->name('get_image');
 });

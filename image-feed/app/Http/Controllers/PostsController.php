@@ -48,7 +48,7 @@ class PostsController extends Controller
                 'title' => 'required'
             ]
         );
-        $path = $request->file('image')->store(config('app.pending_images'));
+        $path = $request->file('image')->store(config('app.pending_images_dir'));
         $image = Image::create([
             'name' =>  basename($path),
         ]);
@@ -128,18 +128,24 @@ class PostsController extends Controller
                     'status' => 'approved'
                 ]
             );
-            Storage::move("private/$fileName", "/public/images/$fileName");
+            Storage::move(config('app.pending_images_dir') . DIRECTORY_SEPARATOR . $fileName, "/public/images/$fileName");
             return redirect(route('approve_post_list'))->with('success', config('app.success_messages.post_approve'));
         } else if ($request->input('decision') == 'reject') {
             $prev_image_id = $post->image->id;
+            $defaultImage = Image::where('name', 'default.jpeg')->find(1);
+            if (!$defaultImage) {
+                $defaultImage = Image::create([
+                    'name' => 'default.jpeg'
+                ]);
+            }
             Post::where('id', $post->id)->update(
                 [
                     'status' => 'rejected',
-                    'image_id' => Image::where('name', 'rejected.jpg')->find(1)->id
+                    'image_id' => $defaultImage->id
                 ]
             );
             Image::where('id', $prev_image_id)->delete();
-            Storage::delete("private/$fileName");
+            Storage::delete(config('app.pending_images_dir') . DIRECTORY_SEPARATOR . $fileName);
             return redirect(route('approve_post_list'))->with('success', config('app.success_messages.reject'));
         }
         return back()->withErrors(['one' => 'Expected value not found']);
