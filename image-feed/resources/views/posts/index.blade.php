@@ -14,7 +14,7 @@
             <p class="card-text">{{$post->user->name}} </p>
             <p class="card-text"><small class="text-muted"> {{$post->updated_at}} </small></p>
           </div>
-          <img src="storage/images/{{$post->image->name}}" class="card-img-bottom img-fluid" alt="">
+          <img src={{asset("storage/images" . DIRECTORY_SEPARATOR . $post->image->name)}} class=" card-img-bottom img-fluid" alt="">
         </div>
       </li>
       @endforeach

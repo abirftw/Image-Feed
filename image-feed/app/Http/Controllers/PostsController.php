@@ -9,11 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
-abstract class states
-{
-    const APPROVED = 1;
-    const PENDING  = 2;
-}
 class PostsController extends Controller
 {
     /**
@@ -24,7 +19,7 @@ class PostsController extends Controller
     public function index()
     {
         //
-        $posts = Post::where('status', 'approved')->paginate(5); //posts per page
+        $posts = Post::where('status', 'approved')->paginate(config('app.posts_per_page'));
         return view('posts.index', ['posts' => $posts]);
     }
 
@@ -47,7 +42,13 @@ class PostsController extends Controller
     public function store(Request $request)
     {
         //
-        $path = $request->file('image')->store('private');
+        $request->validate(
+            [
+                'image' => 'required|image|mimes:jpg,png,jpeg|max:2048',
+                'title' => 'required'
+            ]
+        );
+        $path = $request->file('image')->store(config('app.pending_images'));
         $image = Image::create([
             'name' =>  basename($path),
         ]);
@@ -57,7 +58,7 @@ class PostsController extends Controller
             'user_id' => Auth::id()
         ]);
         if ($post) {
-            return redirect()->route('user_posts')->with('success', 'Post submitted successfully');
+            return redirect()->route('user_posts')->with('success', config('app.success_messages.post_submit'));
         }
         return back()->withInput();
     }
@@ -71,7 +72,7 @@ class PostsController extends Controller
     public function show()
     {
         //
-        $posts = Post::where('user_id', Auth::id())->paginate(5);
+        $posts = Post::where('user_id', Auth::id())->paginate(config('app.posts_per_page'));
         return view('posts.show', ['posts' => $posts]);
     }
 
@@ -112,22 +113,35 @@ class PostsController extends Controller
     public function approveIndex()
     {
         Gate::authorize('approve-post');
-        $posts = Post::where('status', 'pending')->paginate(5);
+        $posts = Post::where('status', 'pending')->paginate(config('app.posts_per_page'));
         return view('posts.approve', ['posts' => $posts]);
     }
     public function approve(Request $request, Post $post)
     {
+        $request->validate([
+            'decision' => 'required'
+        ]);
+        $fileName = $post->image->name;
         if ($request->input('decision') == 'approve') {
             Post::where('id', $post->id)->update(
                 [
                     'status' => 'approved'
                 ]
             );
-            $fileName = $post->image->name;
             Storage::move("private/$fileName", "/public/images/$fileName");
-            return redirect(route('approve_post_list'))->with('success', 'Success');
+            return redirect(route('approve_post_list'))->with('success', config('app.success_messages.post_approve'));
         } else if ($request->input('decision') == 'reject') {
-            return redirect(route('approve_post_list'))->with('success', 'Success');
+            $prev_image_id = $post->image->id;
+            Post::where('id', $post->id)->update(
+                [
+                    'status' => 'rejected',
+                    'image_id' => Image::where('name', 'rejected.jpg')->find(1)->id
+                ]
+            );
+            Image::where('id', $prev_image_id)->delete();
+            Storage::delete("private/$fileName");
+            return redirect(route('approve_post_list'))->with('success', config('app.success_messages.reject'));
         }
+        return back()->withErrors(['one' => 'Expected value not found']);
     }
 }

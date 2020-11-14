@@ -228,5 +228,14 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
     ],
+    //How many posts will a page have
+    'posts_per_page' => 2,
+
+    'success_messages' => [
+        'post_approve' => 'Post approved successfully',
+        'post_reject' => 'Post rejected successfully',
+        'post_submit' => 'Post submitted for moderation successfully'
+    ],
+    'pending_images' => 'private',
 
 ];

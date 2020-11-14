@@ -19,9 +19,13 @@
           <div class="card-footer text-white bg-primary">
             {{ucwords($post->status)}}
           </div>
-          @else
-          <img src="storage/images/{{$post->image->name}}" class="card-img-bottom img-fluid" alt="">
+          @elseif($post->status == 'approved')
+          <img src={{asset("storage/images" . DIRECTORY_SEPARATOR . $post->image->name)}} class="card-img-bottom img-fluid" alt="">
           <div class="card-footer text-white bg-success">
+            {{ucwords($post->status)}}
+          </div>
+          @else
+          <div class="card-footer text-white bg-danger">
             {{ucwords($post->status)}}
           </div>
           @endif

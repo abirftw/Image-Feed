@@ -69,7 +69,7 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'role_id' => Role::where('type', 'user')->find(1)->id
+            'role_id' => Role::where('type', 'user')->find(1)->id //default user permission is 'user level'
         ]);
     }
 }

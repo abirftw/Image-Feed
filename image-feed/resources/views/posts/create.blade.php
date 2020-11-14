@@ -10,7 +10,7 @@
         @csrf
         <div class="form-group">
           <label for="postTitle">Post Title</label>
-          <input type="text" class="form-control" name="title" id="postTitle" aria-describedby="emailHelp">
+          <input type="text" class="form-control" required name="title" id="postTitle" aria-describedby="emailHelp">
         </div>
         <div class="form-group">
           <input type="file" name="image" id="image">
