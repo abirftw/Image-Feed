@@ -118,6 +118,7 @@ class PostsController extends Controller
     }
     public function approve(Request $request, Post $post)
     {
+        Gate::authorize('approve-post');
         $request->validate([
             'decision' => 'required'
         ]);

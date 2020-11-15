@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<div class="col d-flex justify-content-cente">
+<div class="col d-flex justify-content-center">
   <div class="card mx-auto">
     <div class="card-header">
       My Posts
@@ -33,7 +33,9 @@
       </li>
       @endforeach
     </ul>
+    <div class="card-footer">
+      {{ $posts->links() }}
+    </div>
   </div>
 </div>
-{{ $posts->links() }}
 @endsection
